@@ -32,6 +32,7 @@ export default function Navbar({
     { id: 'hotel', label: 'Hotel Thú Cưng' },
     { id: 'shop', label: 'Pet Shop' },
     { id: 'faq', label: 'Hỏi Đáp / FAQ' },
+    { id: 'admin', label: '👑 Chủ Cửa Hàng' },
   ];
 
   const handleNavClick = (tabId: string) => {

@@ -41,6 +41,7 @@ import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import PricingSection from './components/PricingSection';
 import EmailVoucherModal from './components/EmailVoucherModal';
+import AdminPanel from './components/AdminPanel';
 import { SPA_SERVICES, HOTEL_ROOMS, SHOP_PRODUCTS, CLIENT_REVIEWS, FAQS } from './data';
 import { Product, SpaService, HotelRoom, CartItem, Booking, Review } from './types';
 
@@ -78,6 +79,12 @@ export default function App() {
   const [searchPhoneQuery, setSearchPhoneQuery] = useState<string>('');
   const [hasSearchedBookings, setHasSearchedBookings] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<Booking[]>([]);
+
+  // Admin lock authentication values
+  const [isAdminUnlocked, setIsAdminUnlocked] = useState<boolean>(() => {
+    return localStorage.getItem('lumi_admin_unlocked_session') === 'true';
+  });
+  const [adminPinInput, setAdminPinInput] = useState<string>('');
 
   // Email voucher modal state in App
   const [selectedEmailBooking, setSelectedEmailBooking] = useState<Booking | null>(null);
@@ -1869,6 +1876,68 @@ export default function App() {
                 ))}
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === 'admin' && (
+          <div className="max-w-7xl mx-auto px-4 pt-8">
+            {!isAdminUnlocked ? (
+              <div className="max-w-md mx-auto my-12 bg-slate-900 border border-slate-800 p-8 rounded-[32px] text-center shadow-xl space-y-6 animate-fade-in relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
+                
+                <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mx-auto">
+                  <span className="text-2xl">🔐</span>
+                </div>
+                
+                <div className="space-y-1.5">
+                  <h3 className="text-base font-black text-white">Yêu Cầu Xác Thực Chủ Cửa Hàng</h3>
+                  <p className="text-[11px] text-slate-400">
+                    Trang này chứa cấu hình đẩy tin nhắn Telegram & doanh thu nội bộ. Vui lòng nhập mã PIN bảo mật để tránh rò rỉ thông tin cho đối thủ hoặc khách hàng tò mò.
+                  </p>
+                </div>
+
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (adminPinInput === '2026') {
+                    setIsAdminUnlocked(true);
+                    localStorage.setItem('lumi_admin_unlocked_session', 'true');
+                    triggerToast('🔓 Đã mở khóa Bảng Điều Khiển Quản Trị thành công!', 'success');
+                  } else {
+                    triggerToast('❌ Mã PIN không chính xác, vui lòng thử lại!', 'info');
+                    setAdminPinInput('');
+                  }
+                }} className="space-y-4">
+                  <div>
+                    <input
+                      type="password"
+                      placeholder="Mã PIN mặc định: 2026"
+                      value={adminPinInput}
+                      onChange={(e) => setAdminPinInput(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-center text-sm font-bold text-white focus:outline-none focus:border-amber-500 font-mono tracking-widest"
+                      maxLength={4}
+                      autoFocus
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-605 text-white font-black py-3 rounded-xl text-xs transition-colors cursor-pointer shadow-sm"
+                  >
+                    Nhập Hệ Thống CMS
+                  </button>
+                </form>
+
+                <div className="pt-2 text-[10px] text-slate-500 italic">
+                  💡 Chỉ dẫn: Nhập mã PIN <strong className="text-amber-500">2026</strong> để tiếp tục sử dụng.
+                </div>
+              </div>
+            ) : (
+              <AdminPanel
+                bookings={bookings}
+                onUpdateBookings={saveBookingsToStorage}
+                triggerToast={triggerToast}
+              />
+            )}
           </div>
         )}
 
