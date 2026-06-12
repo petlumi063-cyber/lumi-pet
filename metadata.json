@@ -1,0 +1,6 @@
+{
+  "name": "Lumi Pet - Spa & Hotel 24/7",
+  "description": "Website chuyên nghiệp cung cấp báng giá dịch vụ Spa Thú Cưng, Khách Sạn Chó Mèo Bình Thạnh cao cấp, tối ưu chạy quảng cáo Google Ads chuẩn SEO.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
